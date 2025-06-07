@@ -1,0 +1,28 @@
+{
+  "common": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "User-Agent": "API-Client/1.0"
+  },
+  "auth": {
+    "bearer": {
+      "Authorization": "Bearer {{API_KEY}}"
+    },
+    "basic": {
+      "Authorization": "Basic {{BASIC_AUTH}}"
+    },
+    "apikey": {
+      "X-API-Key": "{{API_KEY}}",
+      "X-API-Secret": "{{API_SECRET}}"
+    }
+  },
+  "endpoints": {
+    "/upload": {
+      "Content-Type": "multipart/form-data"
+    },
+    "/xml": {
+      "Content-Type": "application/xml",
+      "Accept": "application/xml"
+    }
+  }
+}

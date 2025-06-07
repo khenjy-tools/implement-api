@@ -1,0 +1,72 @@
+{
+  "info": {
+    "name": "{{PROJECT_NAME}} API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.example.com"
+    },
+    {
+      "key": "api_key",
+      "value": "your_key_here"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{api_key}}"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Get Data",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/data",
+          "host": ["{{base_url}}"],
+          "path": ["data"]
+        }
+      }
+    },
+    {
+      "name": "Post Data",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"example\",\n  \"value\": \"test\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/data",
+          "host": ["{{base_url}}"],
+          "path": ["data"]
+        }
+      }
+    }
+  ]
+}
