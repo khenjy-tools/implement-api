@@ -1,34 +1,52 @@
-# Implementation Notes
+# IRAS ASR+ API Implementation Notes
 
-## Authentication Notes
-- API key expires every 90 days
-- Refresh tokens are valid for 1 year
-- Rate limiting resets every hour
+## Critical Implementation Requirements
 
-## Quirks & Edge Cases
-- Empty responses return `204 No Content`
-- Bulk operations limited to 100 items
-- File uploads max 10MB
-- Special characters in URLs must be encoded
+### Corppass Authentication Flow
+1. **Server-to-Server Only**: Desktop applications require internet server proxy
+2. **State Parameter**: Must be unique per request, used for XSRF protection
+3. **Callback URL**: Must be exact match with registered URL
+4. **SSL Required**: Self-signed certificates not accepted
 
-## Error Handling
-- Always check for `error` field in response
-- HTTP status codes follow REST standards
-- Retry with exponential backoff for 5xx errors
+### Client Credentials Management
+- **Client ID**: Unique per registered app
+- **Client Secret**: Keep secure, reset if compromised
+- **App Name**: Should reflect actual software name
+- **Changes**: Require 1-2 weeks to process, avoid if possible
 
-## Performance Tips
-- Use pagination for large datasets
-- Cache responses when possible
-- Batch requests when available
-- Monitor rate limit headers
+### Multi-Client Architecture
 
-## Testing Notes
-- Use sandbox environment: `https://sandbox-api.example.com`
-- Test API key: `test_key_12345`
-- Mock responses available in `/test` folder
+#### Scenario A: Single Domain/Server
+- One callback URL handles all client requests
+- Use state parameter to identify clients
+- Manage tokens centrally
 
-## Common Issues
-1. **401 Unauthorized**: Check API key format
-2. **429 Too Many Requests**: Implement rate limiting
-3. **500 Server Error**: Retry with backoff
-4. **Timeout**: Increase timeout or check network
+#### Scenario B: Multi-Domain/Private Servers
+- Requires proxy/gateway server
+- Central callback URL for auth code exchange
+- Distribute tokens to respective domains
+
+## Environment-Specific Notes
+
+### Sandbox Environment
+- **Purpose**: Testing and validation only
+- **Whitelisting**: Form C-S API requires account whitelisting
+- **Test Data**: Use provided test case scenarios
+- **Validation**: Must complete before production access
+
+### Production Environment
+- **Connectivity Test**: Required before go-live
+- **First Submission**: Coordinate with IRAS for verification
+- **Client Rollout**: Start with one client, expand after verification
+
+## Data Submission Guidelines
+
+### GST Returns (F5/F8)
+- **Quarterly**: Submit by due dates
+- **Validation**: Front-end validations required
+- **Format**: JSON payload with financial data
+- **Testing**: Use provided test case scenarios
+
+### Form C-S Submissions
+- **Annual**: Submit by end November
+- **Complexity**: More

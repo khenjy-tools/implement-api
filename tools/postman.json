@@ -1,70 +1,191 @@
 {
   "info": {
-    "name": "{{PROJECT_NAME}} API",
+    "name": "IRAS ASR+ API Collection",
+    "description": "API collection for IRAS ASR+ Digital Products - GST Returns and Corporate Income Tax Returns",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
-      "key": "base_url",
-      "value": "https://api.example.com"
+      "key": "sandbox_base_url",
+      "value": "https://apisandbox.iras.gov.sg/iras"
     },
     {
-      "key": "api_key",
-      "value": "your_key_here"
+      "key": "production_base_url",
+      "value": "https://apiservices.iras.gov.sg/iras"
+    },
+    {
+      "key": "client_id",
+      "value": "your_client_id"
+    },
+    {
+      "key": "client_secret",
+      "value": "your_client_secret"
+    },
+    {
+      "key": "callback_url",
+      "value": "https://yourdomain.com/callback"
+    },
+    {
+      "key": "access_token",
+      "value": ""
+    },
+    {
+      "key": "state_parameter",
+      "value": "unique_state_123"
     }
   ],
-  "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{api_key}}"
-      }
-    ]
-  },
   "item": [
+    {
+      "name": "Corppass Authentication",
+      "item": [
+        {
+          "name": "1. Initiate Corppass Auth",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{sandbox_base_url}}/corppass/v1/auth?client_id={{client_id}}&redirect_uri={{callback_url}}&state={{state_parameter}}&response_type=code",
+              "host": ["{{sandbox_base_url}}"],
+              "path": ["corppass", "v1", "auth"],
+              "query": [
+                {
+                  "key": "client_id",
+                  "value": "{{client_id}}"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "{{callback_url}}"
+                },
+                {
+                  "key": "state",
+                  "value": "{{state_parameter}}"
+                },
+                {
+                  "key": "response_type",
+                  "value": "code"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "2. Exchange Auth Code for Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Basic {{base64_encoded_client_credentials}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code"
+                },
+                {
+                  "key": "code",
+                  "value": "auth_code_from_callback"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "{{callback_url}}"
+                },
+                {
+                  "key": "state",
+                  "value": "{{state_parameter}}"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{sandbox_base_url}}/corppass/v1/token",
+              "host": ["{{sandbox_base_url}}"],
+              "path": ["corppass", "v1", "token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "GST Submissions",
+      "item": [
+        {
+          "name": "Submit GST Return (F5/F8)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"returnType\": \"F5\",\n  \"taxPeriod\": \"2024Q1\",\n  \"companyUEN\": \"200123456K\",\n  \"gstData\": {\n    \"totalSales\": 100000,\n    \"totalPurchases\": 80000,\n    \"outputTax\": 7000,\n    \"inputTax\": 5600\n  }\n}"
+            },
+            "url": {
+              "raw": "{{sandbox_base_url}}/gst/v1/submit",
+              "host": ["{{sandbox_base_url}}"],
+              "path": ["gst", "v1", "submit"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Corporate Tax Submissions",
+      "item": [
+        {
+          "name": "Submit Form C-S",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"formType\": \"C-S\",\n  \"yearOfAssessment\": \"2024\",\n  \"companyUEN\": \"200123456K\",\n  \"financialData\": {\n    \"revenue\": 1000000,\n    \"expenses\": 800000,\n    \"taxableIncome\": 200000,\n    \"taxPayable\": 34000\n  }\n}"
+            },
+            "url": {
+              "raw": "{{sandbox_base_url}}/formcs/v1/submit",
+              "host": ["{{sandbox_base_url}}"],
+              "path": ["formcs", "v1", "submit"]
+            }
+          }
+        }
+      ]
+    },
     {
       "name": "Health Check",
       "request": {
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "{{base_url}}/health",
-          "host": ["{{base_url}}"],
+          "raw": "{{sandbox_base_url}}/health",
+          "host": ["{{sandbox_base_url}}"],
           "path": ["health"]
-        }
-      }
-    },
-    {
-      "name": "Get Data",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{base_url}}/data",
-          "host": ["{{base_url}}"],
-          "path": ["data"]
-        }
-      }
-    },
-    {
-      "name": "Post Data",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"name\": \"example\",\n  \"value\": \"test\"\n}"
-        },
-        "url": {
-          "raw": "{{base_url}}/data",
-          "host": ["{{base_url}}"],
-          "path": ["data"]
         }
       }
     }

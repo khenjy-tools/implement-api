@@ -2,27 +2,38 @@
   "common": {
     "Content-Type": "application/json",
     "Accept": "application/json",
-    "User-Agent": "API-Client/1.0"
+    "User-Agent": "IRAS-ASR-Plus-Client/1.0"
   },
-  "auth": {
-    "bearer": {
-      "Authorization": "Bearer {{API_KEY}}"
+  "corppass_auth": {
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  },
+  "corppass_token": {
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Accept": "application/json"
+  },
+  "api_submission": {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+    "Authorization": "Bearer {{ACCESS_TOKEN}}"
+  },
+  "environments": {
+    "sandbox": {
+      "base_url": "https://apisandbox.iras.gov.sg/iras",
+      "developer_portal": "https://apisandbox.iras.gov.sg/iras/devportal/sb"
     },
-    "basic": {
-      "Authorization": "Basic {{BASIC_AUTH}}"
-    },
-    "apikey": {
-      "X-API-Key": "{{API_KEY}}",
-      "X-API-Secret": "{{API_SECRET}}"
+    "production": {
+      "base_url": "https://apiservices.iras.gov.sg/iras",
+      "developer_portal": "https://apiservices.iras.gov.sg/iras/devportal"
     }
   },
-  "endpoints": {
-    "/upload": {
-      "Content-Type": "multipart/form-data"
+  "maintenance_hours": {
+    "sandbox": {
+      "daily": ["13:00-15:00", "20:00-22:00"],
+      "weekly": "Wednesday 15:00-23:59"
     },
-    "/xml": {
-      "Content-Type": "application/xml",
-      "Accept": "application/xml"
+    "production": {
+      "weekly": ["Wednesday 02:00-06:00", "Sunday 02:00-08:30"]
     }
   }
 }
